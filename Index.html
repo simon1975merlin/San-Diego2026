@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>San Diego Family Trip 🌊</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ocean: #0077b6;
+    --sky: #48cae4;
+    --sand: #f4d06f;
+    --coral: #f77f5b;
+    --palm: #52b788;
+    --dusk: #1a1a2e;
+    --white: #fff;
+    --light: #f0f8ff;
+    --card-bg: rgba(255,255,255,0.92);
+    --radius: 20px;
+    --shadow: 0 8px 32px rgba(0,119,182,0.13);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--dusk); color: #1a1a2e; min-height: 100vh; overflow-x: hidden; }
+
+  /* HERO */
+  .hero { position: relative; height: 100svh; min-height: 500px; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; background: linear-gradient(170deg, #0077b6 0%, #023e8a 40%, #1a1a2e 100%); }
+  .hero-waves { position: absolute; bottom: 0; left: 0; width: 100%; pointer-events: none; }
+  .sun { position: absolute; top: 18%; right: 12%; width: 90px; height: 90px; border-radius: 50%; background: radial-gradient(circle, #f4d06f 60%, #f77f5b 100%); box-shadow: 0 0 60px 20px rgba(244,208,111,0.35); animation: sunpulse 4s ease-in-out infinite; }
+  @keyframes sunpulse { 0%,100% { transform: scale(1); box-shadow: 0 0 60px 20px rgba(244,208,111,0.35); } 50% { transform: scale(1.07); box-shadow: 0 0 90px 35px rgba(244,208,111,0.45); } }
+  .palm-left, .palm-right { position: absolute; bottom: 60px; font-size: 80px; opacity: 0.5; animation: palmwave 3s ease-in-out infinite; }
+  .palm-left { left: -10px; transform-origin: bottom center; }
+  .palm-right { right: -10px; transform-origin: bottom center; animation-delay: 1.5s; }
+  @keyframes palmwave { 0%,100% { transform: rotate(-4deg);} 50% { transform: rotate(4deg);} }
+  .hero-content { position: relative; z-index: 2; text-align: center; padding: 0 20px; }
+  .hero-badge { display: inline-block; background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.3); color: var(--sand); font-size: 12px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; padding: 6px 16px; border-radius: 99px; margin-bottom: 14px; }
+  .hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(38px, 10vw, 72px); font-weight: 900; color: white; line-height: 1.05; text-shadow: 0 4px 24px rgba(0,0,0,0.3); }
+  .hero h1 span { color: var(--sand); }
+  .hero-sub { margin-top: 10px; color: rgba(255,255,255,0.8); font-size: 16px; font-weight: 300; }
+  .hero-dates { margin-top: 18px; display: inline-flex; gap: 10px; align-items: center; background: rgba(255,255,255,0.15); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.25); border-radius: 99px; padding: 8px 22px; color: white; font-size: 15px; font-weight: 500; }
+  .hero-scroll { margin-top: 30px; color: rgba(255,255,255,0.6); font-size: 13px; display: flex; flex-direction: column; align-items: center; gap: 6px; animation: bounce 2s infinite; }
+  @keyframes bounce { 0%,100%{transform:translateY(0)}50%{transform:translateY(8px)} }
+
+  /* NAV */
+  .sticky-nav { position: sticky; top: 0; z-index: 100; background: rgba(26,26,46,0.97); backdrop-filter: blur(14px); border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; overflow-x: auto; gap: 0; scrollbar-width: none; }
+  .sticky-nav::-webkit-scrollbar { display: none; }
+  .nav-btn { flex: 0 0 auto; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 10px 16px; background: none; border: none; cursor: pointer; color: rgba(255,255,255,0.5); font-size: 10px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; transition: color 0.2s; border-bottom: 2.5px solid transparent; font-family: 'DM Sans', sans-serif; }
+  .nav-btn.active { color: var(--sand); border-bottom-color: var(--sand); }
+  .nav-btn:hover { color: white; }
+  .nav-icon { font-size: 18px; }
+
+  /* MAIN */
+  main { background: var(--light); min-height: 80vh; }
+  section { display: none; padding: 20px 16px 40px; max-width: 680px; margin: 0 auto; }
+  section.active { display: block; }
+  .section-title { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 700; color: var(--dusk); margin-bottom: 6px; }
+  .section-sub { color: #666; font-size: 14px; margin-bottom: 20px; }
+
+  /* ACTION BUTTONS */
+  .act-btns { display: flex; gap: 7px; margin-top: 8px; flex-wrap: wrap; }
+  .btn-map { display: inline-flex; align-items: center; gap: 5px; background: #e8f4f8; color: var(--ocean); border: 1px solid rgba(0,119,182,0.2); font-size: 11px; font-weight: 700; padding: 5px 11px; border-radius: 99px; cursor: pointer; text-decoration: none; transition: background 0.15s; font-family: 'DM Sans', sans-serif; }
+  .btn-map:hover { background: #d0eaf5; }
+  .btn-web { display: inline-flex; align-items: center; gap: 5px; background: #fff3e0; color: #e65100; border: 1px solid rgba(230,81,0,0.2); font-size: 11px; font-weight: 700; padding: 5px 11px; border-radius: 99px; cursor: pointer; text-decoration: none; transition: background 0.15s; font-family: 'DM Sans', sans-serif; }
+  .btn-web:hover { background: #ffe0b2; }
+  .btn-directions { display: inline-flex; align-items: center; gap: 5px; background: #e8f5e9; color: #2e7d32; border: 1px solid rgba(46,125,50,0.2); font-size: 11px; font-weight: 700; padding: 5px 11px; border-radius: 99px; cursor: pointer; text-decoration: none; transition: background 0.15s; font-family: 'DM Sans', sans-serif; }
+  .btn-directions:hover { background: #c8e6c9; }
+
+  /* ITINERARY */
+  .day-card { background: var(--card-bg); border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 16px; overflow: hidden; border: 1px solid rgba(0,119,182,0.08); }
+  .day-header { background: linear-gradient(135deg, var(--ocean), #023e8a); color: white; padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
+  .day-header-left { display: flex; flex-direction: column; }
+  .day-number { font-size: 11px; font-weight: 600; letter-spacing: 1.5px; opacity: 0.75; text-transform: uppercase; }
+  .day-title { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; }
+  .day-date { font-size: 12px; opacity: 0.7; margin-top: 2px; }
+  .day-toggle { font-size: 20px; transition: transform 0.3s; }
+  .day-card.open .day-toggle { transform: rotate(180deg); }
+  .day-body { display: none; padding: 0 16px 16px; }
+  .day-card.open .day-body { display: block; }
+  .activity { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid rgba(0,0,0,0.06); }
+  .activity:last-child { border-bottom: none; }
+  .act-time { flex: 0 0 56px; font-size: 11px; font-weight: 600; color: var(--ocean); padding-top: 2px; text-align: right; }
+  .act-dot { flex: 0 0 10px; display: flex; flex-direction: column; align-items: center; padding-top: 5px; gap: 2px; }
+  .act-dot-circle { width: 10px; height: 10px; border-radius: 50%; background: var(--ocean); flex-shrink: 0; }
+  .act-dot-line { width: 2px; flex: 1; background: rgba(0,119,182,0.2); min-height: 20px; }
+  .act-content { flex: 1; min-width: 0; }
+  .act-title { font-weight: 600; font-size: 15px; color: var(--dusk); }
+  .act-desc { font-size: 13px; color: #555; margin-top: 2px; line-height: 1.5; }
+  .act-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
+  .tag { font-size: 10px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; padding: 3px 9px; border-radius: 99px; }
+  .tag-kids { background: #e8f5e9; color: #2e7d32; }
+  .tag-food { background: #fff3e0; color: #e65100; }
+  .tag-beach { background: #e3f2fd; color: #0277bd; }
+  .tag-culture { background: #f3e5f5; color: #7b1fa2; }
+  .tag-shopping { background: #fce4ec; color: #c62828; }
+  .tag-festival { background: #fffde7; color: #f57f17; }
+  .tag-nature { background: #e8f5e9; color: #1b5e20; }
+
+  /* SITES */
+  .sites-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .site-card { background: var(--card-bg); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; border: 1px solid rgba(0,119,182,0.07); transition: transform 0.18s, box-shadow 0.18s; }
+  .site-card:hover { transform: translateY(-3px); box-shadow: 0 14px 40px rgba(0,119,182,0.18); }
+  .site-art { width: 100%; aspect-ratio: 4/3; display: flex; align-items: center; justify-content: center; font-size: 52px; position: relative; overflow: hidden; }
+  .site-art-inner { position: relative; z-index: 2; text-align: center; }
+  .site-art-title { font-size: 11px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; opacity: 0.9; }
+  .site-info { padding: 10px 12px 13px; }
+  .site-name { font-weight: 700; font-size: 14px; color: var(--dusk); }
+  .site-tagline { font-size: 12px; color: #666; margin-top: 2px; line-height: 1.4; }
+  .site-loc { font-size: 11px; color: var(--ocean); font-weight: 600; margin-top: 4px; }
+  .site-btns { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+
+  /* RESTAURANTS */
+  .rest-card { background: var(--card-bg); border-radius: var(--radius); box-shadow: var(--shadow); padding: 16px; margin-bottom: 14px; border: 1px solid rgba(0,119,182,0.07); }
+  .rest-top { display: flex; gap: 14px; align-items: flex-start; }
+  .rest-emoji { font-size: 38px; flex-shrink: 0; }
+  .rest-name { font-weight: 700; font-size: 16px; color: var(--dusk); }
+  .rest-cuisine { font-size: 12px; color: var(--coral); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin: 2px 0; }
+  .rest-desc { font-size: 13px; color: #555; line-height: 1.5; }
+  .rest-meta { display: flex; gap: 10px; margin-top: 7px; flex-wrap: wrap; }
+  .rest-pill { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 99px; background: var(--light); color: #444; border: 1px solid rgba(0,0,0,0.08); }
+  .stars { color: #f4c430; font-size: 13px; }
+  .rest-btns { display: flex; gap: 7px; margin-top: 10px; flex-wrap: wrap; }
+
+  /* FESTIVALS */
+  .fest-card { background: var(--card-bg); border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 14px; overflow: hidden; border: 1px solid rgba(0,119,182,0.07); }
+  .fest-header { padding: 14px 16px; display: flex; gap: 14px; align-items: center; }
+  .fest-emoji { font-size: 36px; }
+  .fest-name { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; color: var(--dusk); }
+  .fest-dates { font-size: 12px; color: var(--ocean); font-weight: 600; margin-top: 2px; }
+  .fest-desc { font-size: 13px; color: #555; padding: 0 16px 10px; line-height: 1.55; }
+  .fest-btns { padding: 0 16px 14px; display: flex; gap: 7px; flex-wrap: wrap; }
+  .fest-bar { height: 4px; background: linear-gradient(90deg, var(--sky), var(--coral)); }
+
+  /* SHOPPING */
+  .shop-card { background: var(--card-bg); border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 14px; padding: 16px; border: 1px solid rgba(0,119,182,0.07); }
+  .shop-top { display: flex; gap: 14px; }
+  .shop-emoji { font-size: 34px; flex-shrink: 0; }
+  .shop-name { font-weight: 700; font-size: 15px; color: var(--dusk); }
+  .shop-type { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--palm); margin: 2px 0; }
+  .shop-desc { font-size: 13px; color: #555; line-height: 1.5; }
+  .shop-btns { display: flex; gap: 7px; margin-top: 10px; flex-wrap: wrap; }
+
+  /* PHOTOS */
+  .photos-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .upload-btn { display: flex; align-items: center; gap: 7px; background: linear-gradient(135deg, var(--ocean), var(--sky)); color: white; font-size: 14px; font-weight: 600; padding: 10px 18px; border-radius: 99px; border: none; cursor: pointer; font-family: 'DM Sans', sans-serif; box-shadow: 0 4px 15px rgba(0,119,182,0.3); transition: transform 0.15s; }
+  .upload-btn:active { transform: scale(0.97); }
+  #fileInput { display: none; }
+  .photos-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .photo-item { aspect-ratio: 1/1; border-radius: 12px; overflow: hidden; position: relative; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
+  .photo-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
+  .photo-item:hover img { transform: scale(1.06); }
+  .photo-caption { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.65)); color: white; font-size: 10px; padding: 18px 8px 6px; font-weight: 500; }
+  .photo-delete { position: absolute; top: 5px; right: 5px; background: rgba(0,0,0,0.5); color: white; border: none; border-radius: 50%; width: 22px; height: 22px; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+  .photos-empty { text-align: center; padding: 50px 20px; color: #888; background: var(--card-bg); border-radius: var(--radius); border: 2px dashed rgba(0,119,182,0.25); }
+  .photos-empty-icon { font-size: 52px; margin-bottom: 12px; }
+  .photos-empty p { font-size: 15px; font-weight: 500; color: #555; }
+  .photos-empty small { font-size: 13px; color: #aaa; }
+  .families-info { background: linear-gradient(135deg, rgba(0,119,182,0.1), rgba(72,202,228,0.1)); border: 1px solid rgba(0,119,182,0.2); border-radius: var(--radius); padding: 16px; margin-bottom: 20px; display: flex; gap: 12px; align-items: flex-start; }
+  .families-icon { font-size: 28px; flex-shrink: 0; }
+  .families-info h3 { font-size: 15px; font-weight: 700; color: var(--dusk); }
+  .families-info p { font-size: 13px; color: #555; margin-top: 3px; line-height: 1.5; }
+  .share-banner { background: linear-gradient(135deg, var(--coral), #e84393); border-radius: var(--radius); padding: 18px; margin-bottom: 20px; color: white; display: flex; gap: 14px; align-items: center; }
+  .share-btn { margin-top: 10px; background: rgba(255,255,255,0.25); border: 1px solid rgba(255,255,255,0.5); color: white; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600; padding: 8px 16px; border-radius: 99px; cursor: pointer; }
+
+  /* MAP MODAL */
+  .map-modal { display: none; position: fixed; inset: 0; z-index: 999; background: rgba(0,0,0,0.85); align-items: flex-end; justify-content: center; padding: 0; }
+  .map-modal.open { display: flex; }
+  .map-sheet { background: white; width: 100%; max-width: 680px; border-radius: 24px 24px 0 0; overflow: hidden; max-height: 90vh; display: flex; flex-direction: column; animation: slideUp 0.3s ease; }
+  @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+  .map-sheet-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 18px 12px; border-bottom: 1px solid #eee; flex-shrink: 0; }
+  .map-sheet-title { font-weight: 700; font-size: 16px; color: var(--dusk); }
+  .map-sheet-addr { font-size: 12px; color: #888; margin-top: 2px; }
+  .map-close { background: #f0f0f0; border: none; border-radius: 50%; width: 32px; height: 32px; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .map-iframe-wrap { flex: 1; overflow: hidden; min-height: 320px; }
+  .map-iframe-wrap iframe { width: 100%; height: 100%; min-height: 320px; border: none; display: block; }
+  .map-actions { display: flex; gap: 10px; padding: 14px 16px; border-top: 1px solid #eee; flex-shrink: 0; }
+  .map-action-btn { flex: 1; display: flex; align-items: center; justify-content: center; gap: 7px; padding: 12px; border-radius: 14px; font-size: 13px; font-weight: 700; text-decoration: none; font-family: 'DM Sans', sans-serif; border: none; cursor: pointer; }
+  .map-action-directions { background: #0077b6; color: white; }
+  .map-action-website { background: #fff3e0; color: #e65100; }
+
+  /* LIGHTBOX */
+  .lightbox { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 9999; align-items: center; justify-content: center; padding: 20px; }
+  .lightbox.open { display: flex; }
+  .lightbox img { max-width: 100%; max-height: 80vh; border-radius: 12px; object-fit: contain; }
+  .lightbox-close { position: absolute; top: 16px; right: 16px; background: rgba(255,255,255,0.15); border: none; color: white; font-size: 22px; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+
+  /* FOOTER */
+  footer { background: var(--dusk); color: rgba(255,255,255,0.4); text-align: center; padding: 22px 16px; font-size: 12px; }
+
+  /* WEATHER */
+  .weather-bar { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 18px; scrollbar-width: none; }
+  .weather-bar::-webkit-scrollbar { display: none; }
+  .weather-pill { flex: 0 0 auto; background: white; border-radius: 12px; padding: 10px 14px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.07); border: 1px solid rgba(0,0,0,0.06); min-width: 68px; }
+  .weather-day { font-size: 10px; font-weight: 600; color: #888; text-transform: uppercase; }
+  .weather-icon { font-size: 22px; margin: 3px 0; }
+  .weather-temp { font-size: 14px; font-weight: 700; color: var(--dusk); }
+
+  /* TIPS */
+  .tips-grid { display: grid; gap: 12px; }
+  .tip-card { background: var(--card-bg); border-radius: 16px; padding: 14px 16px; box-shadow: var(--shadow); display: flex; gap: 12px; align-items: flex-start; border-left: 4px solid var(--ocean); }
+  .tip-icon { font-size: 22px; flex-shrink: 0; }
+  .tip-title { font-weight: 700; font-size: 14px; color: var(--dusk); }
+  .tip-text { font-size: 13px; color: #555; margin-top: 2px; line-height: 1.5; }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+  section.active > * { animation: fadeUp 0.35s ease both; }
+  section.active > *:nth-child(2) { animation-delay: 0.05s; }
+  section.active > *:nth-child(3) { animation-delay: 0.1s; }
+
+  @media(max-width:400px) { .sites-grid { grid-template-columns: 1fr; } .photos-grid { grid-template-columns: repeat(2, 1fr); } }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="sun"></div>
+  <div class="palm-left">🌴</div>
+  <div class="palm-right">🌴</div>
+  <div class="hero-content">
+    <div class="hero-badge">✈️ Family Adventure 2026</div>
+    <h1>San <span>Diego</span><br>Here We Come!</h1>
+    <p class="hero-sub">3 Families · 8 Days · Infinite Memories</p>
+    <div class="hero-dates">📅 July 16 – 23, 2026</div>
+    <div class="hero-scroll"><span>Explore</span><span style="font-size:20px">↓</span></div>
+  </div>
+  <svg class="hero-waves" viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,40 C360,80 1080,0 1440,40 L1440,80 L0,80 Z" fill="#f0f8ff"/>
+  </svg>
+</div>
+
+<!-- NAV -->
+<nav class="sticky-nav" id="mainNav">
+  <button class="nav-btn active" onclick="showSection('itinerary',this)"><span class="nav-icon">🗓️</span>Schedule</button>
+  <button class="nav-btn" onclick="showSection('sites',this)"><span class="nav-icon">🗺️</span>Sites</button>
+  <button class="nav-btn" onclick="showSection('food',this)"><span class="nav-icon">🍴</span>Food</button>
+  <button class="nav-btn" onclick="showSection('festivals',this)"><span class="nav-icon">🎉</span>Events</button>
+  <button class="nav-btn" onclick="showSection('shopping',this)"><span class="nav-icon">🛍️</span>Shopping</button>
+  <button class="nav-btn" onclick="showSection('photos',this)"><span class="nav-icon">📸</span>Photos</button>
+  <button class="nav-btn" onclick="showSection('tips',this)"><span class="nav-icon">💡</span>Tips</button>
+</nav>
+
+<main>
+
+<!-- ITINERARY -->
+<section id="itinerary" class="active">
+  <div class="section-title">Trip Itinerary</div>
+  <p class="section-sub">July 16–23 · Tap each day to expand · 📍 tap map pins for directions</p>
+  <div class="weather-bar">
+    <div class="weather-pill"><div class="weather-day">Jul 16</div><div class="weather-icon">☀️</div><div class="weather-temp">76°F</div></div>
+    <div class="weather-pill"><div class="weather-day">Jul 17</div><div class="weather-icon">⛅</div><div class="weather-temp">74°F</div></div>
+    <div class="weather-pill"><div class="weather-day">Jul 18</div><div class="weather-icon">☀️</div><div class="weather-temp">77°F</div></div>
+    <div class="weather-pill"><div class="weather-day">Jul 19</div><div class="weather-icon">☀️</div><div class="weather-temp">78°F</div></div>
+    <div class="weather-pill"><div class="weather-day">Jul 20</div><div class="weather-icon">🌤️</div><div class="weather-temp">75°F</div></div>
+    <div class="weather-pill"><div class="weather-day">Jul 21</div><div class="weather-icon">☀️</div><div class="weather-temp">77°F</div></div>
+    <div class="weather-pill"><div class="weather-day">Jul 22</div><div class="weather-icon">☀️</div><div class="weather-temp">79°F</div></div>
+    <div class="weather-pill"><div class="weather-day">Jul 23</div><div class="weather-icon">⛅</div><div class="weather-temp">75°F</div></div>
+  </div>
+
+  <!-- Day 1 -->
+  <div class="day-card open" id="day1">
+    <div class="day-header" onclick="toggleDay('day1')">
+      <div class="day-header-left"><span class="day-number">Day 1</span><span class="day-title">Arrival & Old Town</span><span class="day-date">Thursday, July 16</span></div>
+      <span class="day-toggle">⌄</span>
+    </div>
+    <div class="day-body">
+      <div class="activity">
+        <div class="act-time">12 PM</div><div class="act-dot"><div class="act-dot-circle"></div><div class="act-dot-line"></div></div>
+        <div class="act-content">
+          <div class="act-title">✈️ Arrive at SAN Airport</div>
+          <div class="act-desc">Check in, grab rental cars. SAN is super family-friendly and close to everything.</div>
+          <div class="act-btns"><button class="btn-map" onclick="openMap('San Diego International Airport','32.7338,-117.1933','https://www.san.org')">📍 Map</button><a class="btn-web" href="https://www.san.org" target="_blank">🌐 Airport Site</a></div>
+        </div>
+      </div>
+      <div class="activity">
+        <div class="act-time">4 PM</div><div class="act-dot"><div class="act-dot-circle"></div><div class="act-dot-line"></div></div>
+        <div class="act-content">
+          <div class="act-title">🌮 Old Town San Diego State Historic Park</div>
+          <div class="act-desc">Explore California's first European settlement. Adobe buildings, mariachi music, artisan shops.</div>
+          <div class="act-tags"><span class="tag tag-kids">👨‍👩‍👧 Kid Friendly</span><span class="tag tag-culture">🏛️ Culture</span></div>
+          <div class="act-btns"><button class="btn-map" onclick="openMap('Old Town San Diego State Historic Park','32.7541,-117.1960','https://www.parks.ca.gov/?page_id=663')">📍 Map</button><a class="btn-web" href="https://www.parks.ca.gov/?page_id=663" target="_blank">🌐 Website</a><a class="btn-directions" href="https://maps.google.com/?daddr=Old+Town+San+Diego+State+Historic+Park,+San+Diego,+CA" target="_blank">🧭 Directions</a></div>
+        </div>
+      </div>
+      <div class="activity">
+        <div class="act-time">6:30 PM</div><div class="act-dot"><div class="act-dot-circle"></div><div class="act-dot-line"></div></div>
+        <div class="act-content">
+          <div class="act-title">🍽️ Dinner — Casa de Reyes</div>
+          <div class="act-desc">Classic Mexican food in a festive outdoor plaza. Perfect for big groups!</div>
+          <div class="act-tags"><span class="tag tag-food">🍴 Dinner</span><span class="tag tag-kids">👨‍👩‍👧 Family</span></div>
+          <div class="act-btns"><button class="btn-map" onclick="openMap('Casa de Reyes, Old Town San Diego','32.7541,-117.1973','https://casadereyes.com')">📍 Map</button><a class="btn-web" href="https://casadereyes.com" target="_blank">🌐 Menu</a><a class="btn-directions" href="https://maps.google.com/?daddr=Casa+de+Reyes+San+Diego" target="_blank">🧭 Directions</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Day 2 -->
+  <div class="day-card" id="day2">
+    <div class="day-header" onclick="toggleDay('day2')">
+      <div class="day-header-left"><span class="day-number">Day 2</span><span class="day-title">Zoo & Balboa Park</span><span class="day-date">Friday, July 17</span></div>
+      <span class="day-toggle">⌄</span>
+    </div>
+    <div class="day-body">
+      <div class="activity">
+        <div class="act-time">9 AM</div><div class="act-dot"><div class="act-dot-circle"></div><div class="act-dot-line"></div></div>
+        <div class="act-content">
+          <div class="act-title">🦁 San Diego Zoo</div>
+          <div class="act-desc">World-famous zoo with 3,700+ animals! Get there early. Don't miss the panda exhibit and Skyfari tram.</div>
+          <div class="act-tags"><span class="tag tag-kids">👨‍👩‍👧 Kid Friendly</span><span class="tag tag-nature">🌿 Nature</span></div>
+          <div class="act-btns"><button class="btn-map" onclick="openMap('San Diego Zoo','32.7353,-117.1490','https://zoo.sandiegozoo.org')">📍 Map</button><a class="btn-web" href="https://zoo.sandiegozoo.org" target="_blank">🌐 Tickets</a><a class="btn-directions" href="https://maps.google.com/?daddr=San+Diego+Zoo,+San+Diego,+CA" target="_blank">🧭 Directions</a></div>
+        </div>
+      </div>
+      <div class="activity">
+        <div class="act-time">1 PM</div><div class="act-dot"><div class="act-dot-circle"></div><div class="act-dot-line"></div></div>
+        <div class="act-content">
+          <div class="act-title">🎭 Balboa Park Museums</div>
+          <div class="act-desc">Fleet Science Center (kids love it!), Natural History Museum, or Air & Space Museum.</div>
+          <div class="act-tags"><span class="tag tag-culture">🏛️ Culture</span><span class="tag tag-kids">👨‍👩‍👧 Family</span></div>
+          <div class="act-btns"><button class="btn-map" onclick="openMap('Balboa Park, San Diego','32.7341,-117.1446','https://www.balboapark.org')">📍 Map</button><a class="btn-web" href="https://www.balboapark.org" target="_blank">🌐 Park Info</a><a class="btn-directions" href="https://maps.google.com/?daddr=Balboa+Park,+San+Diego,+CA" target="_blank">🧭 Directions</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Day 3 -->
+  <div class="day-card" id="day3">
+    <div class="day-header" onclick="toggleDay('day3')">
+      <div class="day-header-left"><span class="day-number">Day 3</span><span class="day-title">SeaWorld & Mission Bay</span><span class="day-date">Saturday, July 18</span></div>
+      <span class="day-toggle">⌄</span>
+    </div>
+    <div class="day-body">
+      <div class="activity">
+        <div class="act-time">9 AM</div><div class="act-dot"><div class="act-dot-circle"></div><div class="act-dot-line"></div></div>
+        <div class="act-content">
+          <div class="act-title">🐬 SeaWorld San Diego</div>
+          <div class="act-desc">Dolphins, orcas, roller coasters & water rides. Little ones love Sesame Street Bay of Play.</div>
+          <div class="act-tags"><span class="tag tag-kids">👨‍👩‍👧 Kid Friendly</span><span class="tag tag-beach">🌊 Water</span></div>
+          <div class="act-btns"><button class="btn-map" onclick="openMap('SeaWorld San Diego','32.7640,-117.2267','https://seaworld.com/san-diego')">📍 Map</button><a class="btn-web" href="https://seaworld.com/san-diego" target="_blank">🌐 Tickets</a><a class="btn-directions" href="https://maps.google.com/?daddr=SeaWorld+San+Diego" target="_blank">🧭 Directions</a></div>
+        </div>
+      </div>
+      <div class="activity">
+        <div class="act-time">5 PM</div><div class="act-dot"><div class="act-dot-circle"></div><div class="act-dot-line"></div></div>
+        <div class="act-content">
+          <div class="act-title">🚣 Mission Bay Park</div>
+          <div class="act-desc">Kayaks, paddleboards, or just splash in the calm bay. Fiesta Island is nearby too!</div>
+          <div class="act-tags"><span class="tag tag-kids">👨‍👩‍👧 Family</span><span class="tag tag-beach">🏖️ Beach</span></div>
+          <div class="act-btns"><button class="btn-map" onclick="openMap('Mission Bay Park, San Diego','32.7683,-117.2344','https://www.sandiego.gov/park-and-recreation/parks/regional/missionbay')">📍 Map</button><a class="btn-directions" href="https://maps.google.com/?daddr=Mission+Bay+Park,+San+Diego,+CA" target="_blank">🧭 Directions</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Day 4 -->
+  <div class="day-card" id="day4">
+    <div class="day-header" onclick="toggleDay('day4')">
+      <div class="day-header-left"><span class="day-number">Day 4</span><span class="day-title">La Jolla & Beaches</span><span class="day-date">Sunday, July 19 🏳️‍🌈</span></div>
+      <span class="day-toggle">⌄</span>
+    </div>
+    <div class="day-body">
+      <div class="activity">
+        <div class="act-time">9 AM</div><div class="act-dot"><div class="act-dot-circle"></div><div class="act-dot-line"></div></div>
+        <div class="act-content">
+          <div class="act-title">🦭 La Jolla Cove</div>
+          <div class="act-desc">Wild sea lions & harbor seals up close! Snorkeling is spectacular — fish, kelp, and leopard sharks.</div>
+          <div class="act-tags"><span class="tag tag-kids">👨‍👩‍👧 Family</span><span class="tag tag-nature">🌿 Nature</span><span class="tag tag-beach">🌊 Beach</span></div>
+          <div class="act-btns"><button class="btn-map" onclick="openMap('La Jolla Cove, San Diego','32.8501,-117.2711','https://www.sandiego.gov/lifeguards/beaches/lajollacove')">📍 Map</button><a class="btn-directions" href="https://maps.google.com/?daddr=La+Jolla+Cove,+San+Diego,+CA" target="_blank">🧭 Directions</a></div>
+        </div>
+      </div>
+      <div class="activity">
+        <div class="act-time">12 PM</div><div class="act-dot"><div class="act-dot-circle"></div><div class="act-dot-line"></div></div>
+        <div class="act-content">
+          <div class="act-title">🍔 Brunch — La Jolla Village</div>
+          <div class="act-desc">Charming upscale village. Try The Cottage or Barbarella for brunch.</div>
+          <div class="act-tags"><span class="tag tag-food">☕ Brunch</span></div>
+          <div class="act-btns"><button class="btn-map" onclick="openMap('The Cottage La Jolla','32.8468,-117.2745','https://www.cottagelajolla.com')">📍 Map</button><a class="btn-web" href="https://www.cottagelajolla.com" target="_blank">🌐 The Cottage</a><a class="btn-directions" href="https://maps.google.com/?daddr=The+Cottage,+La+Jolla,+San+Diego" target="_blank">🧭 Directions</a></div>
+        </div>
+      </div>
+      <div class="activity">
+        <div class="act-time">6 PM</div><div class="act-dot"><div class="act-dot-circle"></div><div class="act-dot-line"></div></div>
+        <div class="act-content">
+          <div class="act-title">🏳️‍🌈 San Diego Pride Festival — Balboa Park</div>
+          <div class="act-desc">Colorful, family-welcoming festival with live music, parade through Hillcrest, and community spirit!</div>
+          <div class="act-tags"><span class="tag tag-festival">🎉 Festival</span><span class="tag tag-kids">👨‍👩‍👧 All Ages</span></div>
+          <div class="act-btns"><button class="btn-map" onclick="openMap('Balboa Park Marston Point, San Diego','32.7341,-117.1446','https://sdpride.org')">📍 Map</button><a class="btn-web" href="https://sdpride.org" target="_blank">🌐 Pride Info</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Day 5 -->
+  <div class="day-card" id="day5">
+    <div class="day-header" onclick="toggleDay('day5')">
+      <div class="day-header-left"><span class="day-number">Day 5</span><span class="day-title">Del Mar Races & Coronado</span><span class="day-date">Monday, July 20</span></div>
+      <span class="day-toggle">⌄</span>
+    </div>
+    <div class="day-body">
+      <div class="activity">
+        <div class="act-time">10 AM</div><div class="act-dot"><div class="act-dot-circle"></div><div class="act-dot-line"></div></div>
+        <div class="act-content">
+          <div class="act-title">🐎 Del Mar Thoroughbred Club</div>
+          <div class="act-desc">"Where the turf meets the surf!" Summer racing season. Hats encouraged — kids love the horses!</div>
+          <div class="act-tags"><span class="tag tag-kids">👨‍👩‍👧 Family</span><span class="tag tag-festival">🎉 Event</span></div>
+          <div class="act-btns"><button class="btn-map" onclick="openMap('Del Mar Racetrack, Del Mar CA','32.9606,-117.2614','https://www.dmtc.com')">📍 Map</button><a class="btn-web" href="https://www.dmtc.com" target="_blank">🌐 Race Info</a><a class="btn-directions" href="https://maps.google.com/?daddr=Del+Mar+Racetrack,+Del+Mar,+CA" target="_blank">🧭 Directions</a></div>
+        </div>
+      </div>
+      <div class="activity">
+        <div class="act-time">3 PM</div><div class="act-dot"><div class="act-dot-circle"></div><div class="act-dot-line"></div></div>
+        <div class="act-content">
+          <div class="act-title">🏨 Hotel del Coronado & Coronado Beach</div>
+          <div class="act-desc">Cross the iconic bridge. Victorian landmark hotel, stroll Orange Ave — beach rated #1 in the US!</div>
+          <div class="act-tags"><span class="tag tag-beach">🏖️ Beach</span><span class="tag tag-culture">🏛️ Landmark</span></div>
+          <div class="act-btns"><button class="btn-map" onclick="openMap('Hotel del Coronado, Coronado CA','32.6810,-117.1773','https://www.hoteldel.com')">📍 Map</button><a class="btn-web" href="https://www.hoteldel.com" target="_blank">🌐 Hotel Site</a><a class="btn-directions" href="https://maps.google.com/?daddr=Hotel+del+Coronado,+Coronado,+CA" target="_blank">🧭 Directions</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Day 6 -->
+  <div class="day-card" id="day6">
+    <div class="day-header" onclick="toggleDay('day6')">
+      <div class="day-header-left"><span class="day-number">Day 6</span><span class="day-title">USS Midway & Gaslamp</span><span class="day-date">Tuesday, July 21</span></div>
+      <span class="day-toggle">⌄</span>
+    </div>
+    <div class="day-body">
+      <div class="activity">
+        <div class="act-time">10 AM</div><div class="act-dot"><div class="act-dot-circle"></div><div class="act-dot-line"></div></div>
+        <div class="act-content">
+          <div class="act-title">⚓ USS Midway Museum</div>
+          <div class="act-desc">Kids can sit in real fighter jet cockpits! Interactive exhibits and flight simulators for all ages.</div>
+          <div class="act-tags"><span class="tag tag-kids">👨‍👩‍👧 Kid Friendly</span><span class="tag tag-culture">🏛️ Culture</span></div>
+          <div class="act-btns"><button class="btn-map" onclick="openMap('USS Midway Museum, San Diego','32.7137,-117.1750','https://www.midway.org')">📍 Map</button><a class="btn-web" href="https://www.midway.org" target="_blank">🌐 Tickets</a><a class="btn-directions" href="https://maps.google.com/?daddr=USS+Midway+Museum,+San+Diego,+CA" target="_blank">🧭 Directions</a></div>
+        </div>
+      </div>
+      <div class="activity">
+        <div class="act-time">1 PM</div><div class="act-dot"><div class="act-dot-circle"></div><div class="act-dot-line"></div></div>
+        <div class="act-content">
+          <div class="act-title">🎡 Seaport Village</div>
+          <div class="act-desc">Waterfront shops, street performers. Kids love the vintage carousel!</div>
+          <div class="act-tags"><span class="tag tag-kids">👨‍👩‍👧 Family</span><span class="tag tag-shopping">🛍️ Shopping</span></div>
+          <div class="act-btns"><button class="btn-map" onclick="openMap('Seaport Village, San Diego','32.7126,-117.1703','https://www.seaportvillage.com')">📍 Map</button><a class="btn-web" href="https://www.seaportvillage.com" target="_blank">🌐 Site</a><a class="btn-directions" href="https://maps.google.com/?daddr=Seaport+Village,+San+Diego,+CA" target="_blank">🧭 Directions</a></div>
+        </div>
+      </div>
+      <div class="activity">
+        <div class="act-time">7 PM</div><div class="act-dot"><div class="act-dot-circle"></div><div class="act-dot-line"></div></div>
+        <div class="act-content">
+          <div class="act-title">⚾ San Diego Padres — Petco Park</div>
+          <div class="act-desc">MLB game at one of the most beautiful urban ballparks. Free lawn zone beyond outfield for kids!</div>
+          <div class="act-tags"><span class="tag tag-kids">👨‍👩‍👧 Family</span><span class="tag tag-festival">⚾ Sports</span></div>
+          <div class="act-btns"><button class="btn-map" onclick="openMap('Petco Park, San Diego','32.7073,-117.1567','https://www.mlb.com/padres/ballpark')">📍 Map</button><a class="btn-web" href="https://www.mlb.com/padres/tickets" target="_blank">🌐 Tickets</a><a class="btn-directions" href="https://maps.google.com/?daddr=Petco+Park,+San+Diego,+CA" target="_blank">🧭 Directions</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Day 7 -->
+  <div class="day-card" id="day7">
+    <div class="day-header" onclick="toggleDay('day7')">
+      <div class="day-header-left"><span class="day-number">Day 7</span><span class="day-title">LEGOLAND & North County</span><span class="day-date">Wednesday, July 22</span></div>
+      <span class="day-toggle">⌄</span>
+    </div>
+    <div class="day-body">
+      <div class="activity">
+        <div class="act-time">9 AM</div><div class="act-dot"><div class="act-dot-circle"></div><div class="act-dot-line"></div></div>
+        <div class="act-content">
+          <div class="act-title">🧱 LEGOLAND California</div>
+          <div class="act-desc">45 min north in Carlsbad — must with kids! Water Park included. Miniland USA is incredible.</div>
+          <div class="act-tags"><span class="tag tag-kids">👨‍👩‍👧 Kid Favorite</span><span class="tag tag-beach">💦 Water Park</span></div>
+          <div class="act-btns"><button class="btn-map" onclick="openMap('LEGOLAND California, Carlsbad CA','33.1264,-117.3103','https://www.legoland.com/california')">📍 Map</button><a class="btn-web" href="https://www.legoland.com/california" target="_blank">🌐 Tickets</a><a class="btn-directions" href="https://maps.google.com/?daddr=LEGOLAND+California,+Carlsbad,+CA" target="_blank">🧭 Directions</a></div>
+        </div>
+      </div>
+      <div class="activity">
+        <div class="act-time">5 PM</div><div class="act-dot"><div class="act-dot-circle"></div><div class="act-dot-line"></div></div>
+        <div class="act-content">
+          <div class="act-title">🌿 Carlsbad State Beach tide pools</div>
+          <div class="act-desc">Starfish, crabs, and sea anemones in the tide pools. Kids absolutely love it!</div>
+          <div class="act-tags"><span class="tag tag-kids">👨‍👩‍👧 Family</span><span class="tag tag-nature">🌿 Nature</span></div>
+          <div class="act-btns"><button class="btn-map" onclick="openMap('Carlsbad State Beach, Carlsbad CA','33.1517,-117.3521','https://www.parks.ca.gov/?page_id=657')">📍 Map</button><a class="btn-directions" href="https://maps.google.com/?daddr=Carlsbad+State+Beach,+Carlsbad,+CA" target="_blank">🧭 Directions</a></div>
+        </div>
+      </div>
+      <div class="activity">
+        <div class="act-time">7 PM</div><div class="act-dot"><div class="act-dot-circle"></div><div class="act-dot-line"></div></div>
+        <div class="act-content">
+          <div class="act-title">🍻 Farewell Dinner — George's at the Cove</div>
+          <div class="act-desc">Final family dinner with panoramic La Jolla ocean views. Excellent for large groups!</div>
+          <div class="act-tags"><span class="tag tag-food">🍴 Special Dinner</span></div>
+          <div class="act-btns"><button class="btn-map" onclick="openMap('Georges at the Cove, La Jolla','32.8482,-117.2731','https://www.georgesatthecove.com')">📍 Map</button><a class="btn-web" href="https://www.georgesatthecove.com" target="_blank">🌐 Reserve</a><a class="btn-directions" href="https://maps.google.com/?daddr=Georges+at+the+Cove,+La+Jolla,+San+Diego" target="_blank">🧭 Directions</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Day 8 -->
+  <div class="day-card" id="day8">
+    <div class="day-header" onclick="toggleDay('day8')">
+      <div class="day-header-left"><span class="day-number">Day 8</span><span class="day-title">Departure Day</span><span class="day-date">Thursday, July 23</span></div>
+      <span class="day-toggle">⌄</span>
+    </div>
+    <div class="day-body">
+      <div class="activity">
+        <div class="act-time">8 AM</div><div class="act-dot"><div class="act-dot-circle"></div><div class="act-dot-line"></div></div>
+        <div class="act-content">
+          <div class="act-title">🌅 Final Sunrise Beach Walk</div>
+          <div class="act-desc">One last barefoot walk — collect shells, take photos, soak in those ocean vibes.</div>
+          <div class="act-btns"><button class="btn-map" onclick="openMap('Pacific Beach, San Diego','32.7967,-117.2522','https://www.sandiego.gov')">📍 Pacific Beach Map</button></div>
+        </div>
+      </div>
+      <div class="activity">
+        <div class="act-time">12 PM+</div><div class="act-dot"><div class="act-dot-circle"></div><div class="act-dot-line"></div></div>
+        <div class="act-content">
+          <div class="act-title">✈️ Fly Home with Amazing Memories!</div>
+          <div class="act-desc">Upload your best photos to the Photos tab before you go! 📸</div>
+          <div class="act-btns"><button class="btn-map" onclick="openMap('San Diego International Airport','32.7338,-117.1933','https://www.san.org')">📍 Airport Map</button><a class="btn-web" href="https://www.san.org" target="_blank">🌐 Airport</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SITES -->
+<section id="sites">
+  <div class="section-title">Must-See Sites</div>
+  <p class="section-sub">Tap any card for map & website links 🗺️</p>
+  <div class="sites-grid">
+
+    <div class="site-card">
+      <div class="site-art" style="background:linear-gradient(135deg,#023e8a,#0077b6,#48cae4)">
+        <div class="site-art-inner"><div style="font-size:48px">🦁</div><div class="site-art-title" style="color:white">World Famous</div></div>
+        <div style="position:absolute;inset:0;background:url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 60%22><path d=%22M0 40 Q25 20 50 35 Q75 50 100 30 L100 60 L0 60Z%22 fill=%22rgba(255,255,255,0.1)%22/></svg>') bottom/cover no-repeat"></div>
+      </div>
+      <div class="site-info">
+        <div class="site-name">San Diego Zoo</div>
+        <div class="site-tagline">3,700+ animals in lush tropical gardens</div>
+        <div class="site-loc">🎯 Balboa Park</div>
+        <div class="site-btns"><button class="btn-map" onclick="openMap('San Diego Zoo','32.7353,-117.1490','https://zoo.sandiegozoo.org')">📍 Map</button><a class="btn-web" href="https://zoo.sandiegozoo.org" target="_blank">🌐 Site</a><a class="btn-directions" href="https://maps.google.com/?daddr=San+Diego+Zoo" target="_blank">🧭 Go</a></div>
+      </div>
+    </div>
+
+    <div class="site-card">
+      <div class="site-art" style="background:linear-gradient(135deg,#52b788,#2d6a4f,#1b4332)">
+        <div class="site-art-inner"><div style="font-size:48px">🦭</div><div class="site-art-title" style="color:rgba(255,255,255,0.9)">La Jolla</div></div>
+      </div>
+      <div class="site-info">
+        <div class="site-name">La Jolla Cove</div>
+        <div class="site-tagline">Sea lions, snorkeling & sea caves</div>
+        <div class="site-loc">🎯 La Jolla</div>
+        <div class="site-btns"><button class="btn-map" onclick="openMap('La Jolla Cove','32.8501,-117.2711','https://www.sandiego.gov/lifeguards/beaches/lajollacove')">📍 Map</button><a class="btn-web" href="https://www.sandiego.gov/lifeguards/beaches/lajollacove" target="_blank">🌐 Info</a><a class="btn-directions" href="https://maps.google.com/?daddr=La+Jolla+Cove" target="_blank">🧭 Go</a></div>
+      </div>
+    </div>
+
+    <div class="site-card">
+      <div class="site-art" style="background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460)">
+        <div class="site-art-inner"><div style="font-size:48px">⚓</div><div class="site-art-title" style="color:rgba(255,255,255,0.85)">Naval History</div></div>
+        <div style="position:absolute;bottom:0;left:0;right:0;height:25px;background:rgba(0,119,182,0.25);clip-path:polygon(0 50%,100% 0,100% 100%,0 100%)"></div>
+      </div>
+      <div class="site-info">
+        <div class="site-name">USS Midway Museum</div>
+        <div class="site-tagline">America's most-visited naval museum</div>
+        <div class="site-loc">🎯 Downtown Waterfront</div>
+        <div class="site-btns"><button class="btn-map" onclick="openMap('USS Midway Museum','32.7137,-117.1750','https://www.midway.org')">📍 Map</button><a class="btn-web" href="https://www.midway.org" target="_blank">🌐 Site</a><a class="btn-directions" href="https://maps.google.com/?daddr=USS+Midway+Museum" target="_blank">🧭 Go</a></div>
+      </div>
+    </div>
+
+    <div class="site-card">
+      <div class="site-art" style="background:linear-gradient(135deg,#f4d06f,#f77f5b,#e63946)">
+        <div class="site-art-inner"><div style="font-size:48px">🏨</div><div class="site-art-title" style="color:white">Historic Icon</div></div>
+      </div>
+      <div class="site-info">
+        <div class="site-name">Hotel del Coronado</div>
+        <div class="site-tagline">Victorian landmark on a pristine beach</div>
+        <div class="site-loc">🎯 Coronado Island</div>
+        <div class="site-btns"><button class="btn-map" onclick="openMap('Hotel del Coronado','32.6810,-117.1773','https://www.hoteldel.com')">📍 Map</button><a class="btn-web" href="https://www.hoteldel.com" target="_blank">🌐 Site</a><a class="btn-directions" href="https://maps.google.com/?daddr=Hotel+del+Coronado" target="_blank">🧭 Go</a></div>
+      </div>
+    </div>
+
+    <div class="site-card">
+      <div class="site-art" style="background:linear-gradient(135deg,#0077b6,#00b4d8,#90e0ef)">
+        <div class="site-art-inner"><div style="font-size:48px">🐬</div><div class="site-art-title" style="color:white">Ocean Life</div></div>
+      </div>
+      <div class="site-info">
+        <div class="site-name">SeaWorld San Diego</div>
+        <div class="site-tagline">Rides, shows & marine animals</div>
+        <div class="site-loc">🎯 Mission Bay</div>
+        <div class="site-btns"><button class="btn-map" onclick="openMap('SeaWorld San Diego','32.7640,-117.2267','https://seaworld.com/san-diego')">📍 Map</button><a class="btn-web" href="https://seaworld.com/san-diego" target="_blank">🌐 Site</a><a class="btn-directions" href="https://maps.google.com/?daddr=SeaWorld+San+Diego" target="_blank">🧭 Go</a></div>
+      </div>
+    </div>
+
+    <div class="site-card">
+      <div class="site-art" style="background:linear-gradient(135deg,#7b2d8b,#a855f7,#ec4899)">
+        <div class="site-art-inner"><div style="font-size:48px">🌺</div><div class="site-art-title" style="color:white">Urban Oasis</div></div>
+      </div>
+      <div class="site-info">
+        <div class="site-name">Balboa Park</div>
+        <div class="site-tagline">17 museums, gardens & the Zoo</div>
+        <div class="site-loc">🎯 Central San Diego</div>
+        <div class="site-btns"><button class="btn-map" onclick="openMap('Balboa Park San Diego','32.7341,-117.1446','https://www.balboapark.org')">📍 Map</button><a class="btn-web" href="https://www.balboapark.org" target="_blank">🌐 Site</a><a class="btn-directions" href="https://maps.google.com/?daddr=Balboa+Park+San+Diego" target="_blank">🧭 Go</a></div>
+      </div>
+    </div>
+
+    <div class="site-card">
+      <div class="site-art" style="background:linear-gradient(135deg,#ff6b35,#f7931e,#ffd700)">
+        <div class="site-art-inner"><div style="font-size:48px">🧱</div><div class="site-art-title" style="color:white">Kids' Paradise</div></div>
+      </div>
+      <div class="site-info">
+        <div class="site-name">LEGOLAND California</div>
+        <div class="site-tagline">Theme park + water park in Carlsbad</div>
+        <div class="site-loc">🎯 Carlsbad (45 min)</div>
+        <div class="site-btns"><button class="btn-map" onclick="openMap('LEGOLAND California Carlsbad','33.1264,-117.3103','https://www.legoland.com/california')">📍 Map</button><a class="btn-web" href="https://www.legoland.com/california" target="_blank">🌐 Site</a><a class="btn-directions" href="https://maps.google.com/?daddr=LEGOLAND+California,+Carlsbad" target="_blank">🧭 Go</a></div>
+      </div>
+    </div>
+
+    <div class="site-card">
+      <div class="site-art" style="background:linear-gradient(135deg,#2d6a4f,#52b788,#b7e4c7)">
+        <div class="site-art-inner"><div style="font-size:48px">🌲</div><div class="site-art-title" style="color:white">Rare Pines</div></div>
+      </div>
+      <div class="site-info">
+        <div class="site-name">Torrey Pines Reserve</div>
+        <div class="site-tagline">Coastal trails above stunning beaches</div>
+        <div class="site-loc">🎯 La Jolla / Del Mar</div>
+        <div class="site-btns"><button class="btn-map" onclick="openMap('Torrey Pines State Natural Reserve','32.9192,-117.2542','https://www.torreypines.org')">📍 Map</button><a class="btn-web" href="https://www.torreypines.org" target="_blank">🌐 Site</a><a class="btn-directions" href="https://maps.google.com/?daddr=Torrey+Pines+State+Natural+Reserve" target="_blank">🧭 Go</a></div>
+      </div>
+    </div>
+
+    <div class="site-card">
+      <div class="site-art" style="background:linear-gradient(135deg,#7f5539,#b08968,#ddb892)">
+        <div class="site-art-inner"><div style="font-size:48px">🌮</div><div class="site-art-title" style="color:white">1821</div></div>
+      </div>
+      <div class="site-info">
+        <div class="site-name">Old Town San Diego</div>
+        <div class="site-tagline">California's birthplace & Mexican culture</div>
+        <div class="site-loc">🎯 Old Town</div>
+        <div class="site-btns"><button class="btn-map" onclick="openMap('Old Town San Diego State Historic Park','32.7541,-117.1960','https://www.parks.ca.gov/?page_id=663')">📍 Map</button><a class="btn-web" href="https://www.parks.ca.gov/?page_id=663" target="_blank">🌐 Site</a><a class="btn-directions" href="https://maps.google.com/?daddr=Old+Town+San+Diego" target="_blank">🧭 Go</a></div>
+      </div>
+    </div>
+
+    <div class="site-card">
+      <div class="site-art" style="background:linear-gradient(135deg,#023e8a,#0096c7,#f4d06f)">
+        <div class="site-art-inner"><div style="font-size:48px">⚾</div><div class="site-art-title" style="color:white">Play Ball!</div></div>
+      </div>
+      <div class="site-info">
+        <div class="site-name">Petco Park</div>
+        <div class="site-tagline">Padres MLB games in a stunning park</div>
+        <div class="site-loc">🎯 Downtown / Gaslamp</div>
+        <div class="site-btns"><button class="btn-map" onclick="openMap('Petco Park San Diego','32.7073,-117.1567','https://www.mlb.com/padres/tickets')">📍 Map</button><a class="btn-web" href="https://www.mlb.com/padres/tickets" target="_blank">🌐 Tickets</a><a class="btn-directions" href="https://maps.google.com/?daddr=Petco+Park,+San+Diego" target="_blank">🧭 Go</a></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- FOOD -->
+<section id="food">
+  <div class="section-title">Best Restaurants</div>
+  <p class="section-sub">From tacos to ocean views — tap map for directions 🗺️</p>
+
+  <div class="rest-card">
+    <div class="rest-top"><div class="rest-emoji">🌮</div>
+    <div><div class="rest-name">Puesto at the Headquarters</div><div class="rest-cuisine">Modern Mexican</div><div class="stars">★★★★★</div><div class="rest-desc">Award-winning tacos in a gorgeous historic police HQ building. The crystal taco shells are legendary — kids-friendly with a great menu.</div>
+    <div class="rest-meta"><span class="rest-pill">👨‍👩‍👧 Family</span><span class="rest-pill">$$</span><span class="rest-pill">📍 Embarcadero</span></div></div></div>
+    <div class="rest-btns"><button class="btn-map" onclick="openMap('Puesto at the Headquarters, San Diego','32.7143,-117.1680','https://eatpuesto.com')">📍 Map</button><a class="btn-web" href="https://eatpuesto.com" target="_blank">🌐 Menu</a><a class="btn-directions" href="https://maps.google.com/?daddr=Puesto+at+the+Headquarters+San+Diego" target="_blank">🧭 Directions</a></div>
+  </div>
+
+  <div class="rest-card">
+    <div class="rest-top"><div class="rest-emoji">🐟</div>
+    <div><div class="rest-name">George's at the Cove</div><div class="rest-cuisine">California Cuisine / Seafood</div><div class="stars">★★★★★</div><div class="rest-desc">Rooftop terrace with panoramic La Jolla Cove views. Ocean Bar level is more casual — stunning for groups.</div>
+    <div class="rest-meta"><span class="rest-pill">🌊 Ocean View</span><span class="rest-pill">$$$</span><span class="rest-pill">📍 La Jolla</span></div></div></div>
+    <div class="rest-btns"><button class="btn-map" onclick="openMap('Georges at the Cove La Jolla','32.8482,-117.2731','https://www.georgesatthecove.com')">📍 Map</button><a class="btn-web" href="https://www.georgesatthecove.com" target="_blank">🌐 Reserve</a><a class="btn-directions" href="https://maps.google.com/?daddr=Georges+at+the+Cove+La+Jolla" target="_blank">🧭 Directions</a></div>
+  </div>
+
+  <div class="rest-card">
+    <div class="rest-top"><div class="rest-emoji">🌯</div>
+    <div><div class="rest-name">Lolita's Taco Shop</div><div class="rest-cuisine">Authentic San Diego Mexican</div><div class="stars">★★★★☆</div><div class="rest-desc">California-style burritos (with french fries inside!) beloved by locals. Cheap, fast, delicious.</div>
+    <div class="rest-meta"><span class="rest-pill">👧 Kids Love</span><span class="rest-pill">$</span><span class="rest-pill">📍 Multiple Locations</span></div></div></div>
+    <div class="rest-btns"><button class="btn-map" onclick="openMap('Lolitas Taco Shop San Diego','32.7500,-117.1500','https://lolitasmexicanfood.com')">📍 Map</button><a class="btn-web" href="https://lolitasmexicanfood.com" target="_blank">🌐 Locations</a><a class="btn-directions" href="https://maps.google.com/?q=Lolita%27s+Taco+Shop+San+Diego" target="_blank">🧭 Directions</a></div>
+  </div>
+
+  <div class="rest-card">
+    <div class="rest-top"><div class="rest-emoji">🦞</div>
+    <div><div class="rest-name">Tom Ham's Lighthouse</div><div class="rest-cuisine">Seafood & American</div><div class="stars">★★★★☆</div><div class="rest-desc">Casual waterfront dining inside a real lighthouse with sweeping bay views. Sunday brunch is legendary.</div>
+    <div class="rest-meta"><span class="rest-pill">👨‍👩‍👧 Family</span><span class="rest-pill">$$</span><span class="rest-pill">📍 Harbor Island</span></div></div></div>
+    <div class="rest-btns"><button class="btn-map" onclick="openMap('Tom Hams Lighthouse San Diego','32.7226,-117.2003','https://tomhamslighthouse.com')">📍 Map</button><a class="btn-web" href="https://tomhamslighthouse.com" target="_blank">🌐 Reserve</a><a class="btn-directions" href="https://maps.google.com/?daddr=Tom+Ham%27s+Lighthouse+San+Diego" target="_blank">🧭 Directions</a></div>
+  </div>
+
+  <div class="rest-card">
+    <div class="rest-top"><div class="rest-emoji">🍦</div>
+    <div><div class="rest-name">Mariposa Ice Cream</div><div class="rest-cuisine">Artisan Ice Cream</div><div class="stars">★★★★★</div><div class="rest-desc">Churro-coated cups, unique flavors like horchata and hibiscus. Kids go absolutely wild!</div>
+    <div class="rest-meta"><span class="rest-pill">🍭 Dessert</span><span class="rest-pill">$</span><span class="rest-pill">📍 Little Italy</span></div></div></div>
+    <div class="rest-btns"><button class="btn-map" onclick="openMap('Mariposa Ice Cream Little Italy San Diego','32.7238,-117.1695','https://www.mariposasandiego.com')">📍 Map</button><a class="btn-web" href="https://www.mariposasandiego.com" target="_blank">🌐 Site</a><a class="btn-directions" href="https://maps.google.com/?daddr=Mariposa+Ice+Cream+San+Diego" target="_blank">🧭 Directions</a></div>
+  </div>
+
+  <div class="rest-card">
+    <div class="rest-top"><div class="rest-emoji">🍕</div>
+    <div><div class="rest-name">Bronx Pizza</div><div class="rest-cuisine">NY-Style Pizza</div><div class="stars">★★★★☆</div><div class="rest-desc">Giant, foldable New York slices. Quick, affordable, always a hit with the kids. Cash only!</div>
+    <div class="rest-meta"><span class="rest-pill">👧 Kids Love</span><span class="rest-pill">$</span><span class="rest-pill">📍 Hillcrest</span></div></div></div>
+    <div class="rest-btns"><button class="btn-map" onclick="openMap('Bronx Pizza Hillcrest San Diego','32.7503,-117.1617','https://www.bronxpizzasd.com')">📍 Map</button><a class="btn-web" href="https://www.bronxpizzasd.com" target="_blank">🌐 Site</a><a class="btn-directions" href="https://maps.google.com/?daddr=Bronx+Pizza+San+Diego" target="_blank">🧭 Directions</a></div>
+  </div>
+
+  <div class="rest-card">
+    <div class="rest-top"><div class="rest-emoji">🥩</div>
+    <div><div class="rest-name">The Crack Shack</div><div class="rest-cuisine">Gourmet Fried Chicken</div><div class="stars">★★★★★</div><div class="rest-desc">Outdoor chicken destination with bocce court, craft drinks, and maybe the best fried chicken sandwich in SD.</div>
+    <div class="rest-meta"><span class="rest-pill">🍺 Outdoor</span><span class="rest-pill">$$</span><span class="rest-pill">📍 Little Italy</span></div></div></div>
+    <div class="rest-btns"><button class="btn-map" onclick="openMap('The Crack Shack Little Italy San Diego','32.7259,-117.1698','https://www.crackshack.com')">📍 Map</button><a class="btn-web" href="https://www.crackshack.com" target="_blank">🌐 Site</a><a class="btn-directions" href="https://maps.google.com/?daddr=The+Crack+Shack+San+Diego" target="_blank">🧭 Directions</a></div>
+  </div>
+
+</section>
+
+<!-- FESTIVALS -->
+<section id="festivals">
+  <div class="section-title">Events & Festivals</div>
+  <p class="section-sub">July 16–23 is packed with amazing happenings! 🎉</p>
+
+  <div class="fest-card">
+    <div class="fest-bar" style="background:linear-gradient(90deg,#e40066,#9B59B6,#0096FF)"></div>
+    <div class="fest-header"><div class="fest-emoji">🏳️‍🌈</div><div><div class="fest-name">San Diego Pride Festival</div><div class="fest-dates">July 19–20, 2026 · Balboa Park / Hillcrest</div></div></div>
+    <div class="fest-desc">One of the largest Pride celebrations in the US! Parade through Hillcrest then festival at Marston Point in Balboa Park — family-welcoming with entertainment for all ages.</div>
+    <div class="fest-btns"><button class="btn-map" onclick="openMap('Balboa Park Marston Point San Diego','32.7341,-117.1446','https://sdpride.org')">📍 Map</button><a class="btn-web" href="https://sdpride.org" target="_blank">🌐 sdpride.org</a><a class="btn-directions" href="https://maps.google.com/?daddr=Balboa+Park+San+Diego" target="_blank">🧭 Directions</a></div>
+  </div>
+
+  <div class="fest-card">
+    <div class="fest-bar" style="background:linear-gradient(90deg,#c9a84c,#7b2d8b,#023e8a)"></div>
+    <div class="fest-header"><div class="fest-emoji">🐎</div><div><div class="fest-name">Del Mar Summer Horse Racing</div><div class="fest-dates">Opens July 18, 2026 · Del Mar Fairgrounds</div></div></div>
+    <div class="fest-desc">Where the turf meets the surf! Legendary summer racing with hat contests and thundering thoroughbreds. Kids under 17 often free. Dress up and bet a few dollars!</div>
+    <div class="fest-btns"><button class="btn-map" onclick="openMap('Del Mar Racetrack Del Mar CA','32.9606,-117.2614','https://www.dmtc.com')">📍 Map</button><a class="btn-web" href="https://www.dmtc.com" target="_blank">🌐 dmtc.com</a><a class="btn-directions" href="https://maps.google.com/?daddr=Del+Mar+Racetrack" target="_blank">🧭 Directions</a></div>
+  </div>
+
+  <div class="fest-card">
+    <div class="fest-bar" style="background:linear-gradient(90deg,#f77f5b,#f4d06f,#52b788)"></div>
+    <div class="fest-header"><div class="fest-emoji">🎵</div><div><div class="fest-name">Rady Shell Summer Concerts</div><div class="fest-dates">Throughout July · Jacobs Park Waterfront</div></div></div>
+    <div class="fest-desc">San Diego's iconic outdoor amphitheater on the bay. World-class music under the stars with stunning bay views. Check the schedule for July-specific shows.</div>
+    <div class="fest-btns"><button class="btn-map" onclick="openMap('Rady Shell Jacobs Park San Diego','32.7072,-117.1650','https://radyshell.org')">📍 Map</button><a class="btn-web" href="https://radyshell.org" target="_blank">🌐 radyshell.org</a><a class="btn-directions" href="https://maps.google.com/?daddr=Rady+Shell+Jacobs+Park+San+Diego" target="_blank">🧭 Directions</a></div>
+  </div>
+
+  <div class="fest-card">
+    <div class="fest-bar" style="background:linear-gradient(90deg,#023e8a,#f77f5b,#f4d06f)"></div>
+    <div class="fest-header"><div class="fest-emoji">⚾</div><div><div class="fest-name">San Diego Padres Home Games</div><div class="fest-dates">Multiple dates · Petco Park</div></div></div>
+    <div class="fest-desc">One of America's most beautiful ballparks with downtown skyline views. Park at the Park lawn beyond the outfield is free for kids. Check the MLB schedule for home games July 16–23.</div>
+    <div class="fest-btns"><button class="btn-map" onclick="openMap('Petco Park San Diego','32.7073,-117.1567','https://www.mlb.com/padres/tickets')">📍 Map</button><a class="btn-web" href="https://www.mlb.com/padres/schedule" target="_blank">🌐 Schedule</a><a class="btn-directions" href="https://maps.google.com/?daddr=Petco+Park+San+Diego" target="_blank">🧭 Directions</a></div>
+  </div>
+
+  <div class="fest-card">
+    <div class="fest-bar" style="background:linear-gradient(90deg,#48cae4,#0077b6,#023e8a)"></div>
+    <div class="fest-header"><div class="fest-emoji">🌊</div><div><div class="fest-name">Rady Shell & Beach Events</div><div class="fest-dates">Various Beaches · July</div></div></div>
+    <div class="fest-desc">San Diego's beaches host surf competitions, sandcastle contests, and bonfire nights all summer. Ocean Beach and Pacific Beach have frequent free public events.</div>
+    <div class="fest-btns"><button class="btn-map" onclick="openMap('Pacific Beach San Diego','32.7967,-117.2522','https://www.sandiego.org/articles/beaches/pacific-beach.aspx')">📍 Pacific Beach</button><a class="btn-web" href="https://www.sandiego.org/things-to-do/arts-entertainment/festivals.aspx" target="_blank">🌐 Event Guide</a></div>
+  </div>
+
+</section>
+
+<!-- SHOPPING -->
+<section id="shopping">
+  <div class="section-title">Shopping & Markets</div>
+  <p class="section-sub">From souvenirs to boutiques to farmers markets 🛍️</p>
+
+  <div class="shop-card">
+    <div class="shop-top"><div class="shop-emoji">🎨</div>
+    <div><div class="shop-name">Little Italy Mercato</div><div class="shop-type">Farmers Market & Artisan Goods</div><div class="shop-desc">San Diego's best outdoor Saturday morning market. Local produce, handmade crafts, street food, and flower stands. Kids love the free samples!</div></div></div>
+    <div class="shop-btns"><button class="btn-map" onclick="openMap('Little Italy Mercato San Diego','32.7254,-117.1695','https://www.littleitalysd.com/events/mercato')">📍 Map</button><a class="btn-web" href="https://www.littleitalysd.com/events/mercato" target="_blank">🌐 Info</a><a class="btn-directions" href="https://maps.google.com/?daddr=Little+Italy+Mercato+San+Diego" target="_blank">🧭 Directions</a></div>
+  </div>
+
+  <div class="shop-card">
+    <div class="shop-top"><div class="shop-emoji">🌊</div>
+    <div><div class="shop-name">Pacific Beach Boardwalk</div><div class="shop-type">Surf / Beach Lifestyle</div><div class="shop-desc">Surf gear, beach clothes, flip flops, and SoCal souvenirs along the 3-mile boardwalk. Perfect for that San Diego hoodie for the flight home.</div></div></div>
+    <div class="shop-btns"><button class="btn-map" onclick="openMap('Pacific Beach Boardwalk San Diego','32.7967,-117.2522','https://www.sandiego.org/articles/beaches/pacific-beach.aspx')">📍 Map</button><a class="btn-web" href="https://www.sandiego.org/articles/beaches/pacific-beach.aspx" target="_blank">🌐 Info</a><a class="btn-directions" href="https://maps.google.com/?daddr=Pacific+Beach+Boardwalk+San+Diego" target="_blank">🧭 Directions</a></div>
+  </div>
+
+  <div class="shop-card">
+    <div class="shop-top"><div class="shop-emoji">🏛️</div>
+    <div><div class="shop-name">Seaport Village</div><div class="shop-type">Waterfront Boutiques & Gifts</div><div class="shop-desc">Charming waterfront village with 70+ shops. Unique gifts, local art, kite shops, Upstart Crow bookstore. Kids love the vintage carousel!</div></div></div>
+    <div class="shop-btns"><button class="btn-map" onclick="openMap('Seaport Village San Diego','32.7126,-117.1703','https://www.seaportvillage.com')">📍 Map</button><a class="btn-web" href="https://www.seaportvillage.com" target="_blank">🌐 seaportvillage.com</a><a class="btn-directions" href="https://maps.google.com/?daddr=Seaport+Village+San+Diego" target="_blank">🧭 Directions</a></div>
+  </div>
+
+  <div class="shop-card">
+    <div class="shop-top"><div class="shop-emoji">🌺</div>
+    <div><div class="shop-name">La Jolla Village</div><div class="shop-type">Upscale Boutiques & Art Galleries</div><div class="shop-desc">High-end shopping along Girard and Prospect Streets. Art galleries, jewelry, designer boutiques, and amazing window shopping with ocean breezes.</div></div></div>
+    <div class="shop-btns"><button class="btn-map" onclick="openMap('Girard Avenue La Jolla San Diego','32.8468,-117.2745','https://www.lajollabythesea.com')">📍 Map</button><a class="btn-web" href="https://www.lajollabythesea.com" target="_blank">🌐 Village Guide</a><a class="btn-directions" href="https://maps.google.com/?daddr=Girard+Avenue+La+Jolla+San+Diego" target="_blank">🧭 Directions</a></div>
+  </div>
+
+  <div class="shop-card">
+    <div class="shop-top"><div class="shop-emoji">🧱</div>
+    <div><div class="shop-name">Bazaar del Mundo — Old Town</div><div class="shop-type">Mexican Crafts & Souvenirs</div><div class="shop-desc">Handcrafted Mexican folk art, pottery, jewelry, and the best souvenir selection in the city. Live music and vibrant courtyard atmosphere.</div></div></div>
+    <div class="shop-btns"><button class="btn-map" onclick="openMap('Bazaar del Mundo Old Town San Diego','32.7541,-117.1960','https://bazaardelmundo.com')">📍 Map</button><a class="btn-web" href="https://bazaardelmundo.com" target="_blank">🌐 bazaardelmundo.com</a><a class="btn-directions" href="https://maps.google.com/?daddr=Bazaar+del+Mundo+San+Diego" target="_blank">🧭 Directions</a></div>
+  </div>
+
+  <div class="shop-card">
+    <div class="shop-top"><div class="shop-emoji">🏬</div>
+    <div><div class="shop-name">Fashion Valley Mall</div><div class="shop-type">Major Shopping Mall</div><div class="shop-desc">San Diego's largest open-air mall with 200+ stores including Nordstrom, Macy's, and top brands. Great food court for quick family meals.</div></div></div>
+    <div class="shop-btns"><button class="btn-map" onclick="openMap('Fashion Valley Mall San Diego','32.7693,-117.1627','https://www.simon.com/mall/fashion-valley')">📍 Map</button><a class="btn-web" href="https://www.simon.com/mall/fashion-valley" target="_blank">🌐 Mall Directory</a><a class="btn-directions" href="https://maps.google.com/?daddr=Fashion+Valley+Mall+San+Diego" target="_blank">🧭 Directions</a></div>
+  </div>
+
+</section>
+
+<!-- PHOTOS -->
+<section id="photos">
+  <div class="section-title">Trip Photos</div>
+  <p class="section-sub">Shared album for all 3 families 📸</p>
+  <div class="families-info">
+    <div class="families-icon">👨‍👩‍👧‍👦</div>
+    <div><h3>Shared Family Album</h3><p>All 3 families can add photos here! Tap the button below to upload from your camera roll. Photos are stored locally — just bookmark and share the URL with the other families.</p></div>
+  </div>
+  <div class="share-banner">
+    <div style="font-size:28px">🔗</div>
+    <div style="flex:1">
+      <div style="font-weight:700;font-size:15px">Share this app</div>
+      <div style="font-size:13px;opacity:0.9;margin-top:3px">Send this link to the other families so everyone can view the itinerary, maps, and add photos!</div>
+      <button class="share-btn" onclick="shareApp()">📤 Share App Link</button>
+    </div>
+  </div>
+  <div class="photos-header">
+    <span id="photoCount" style="font-size:14px;color:#666;font-weight:600">0 photos</span>
+    <label class="upload-btn"><span>📷</span> Add Photo<input type="file" id="fileInput" accept="image/*" multiple onchange="handlePhotos(event)"></label>
+  </div>
+  <div id="photosGrid" class="photos-grid"></div>
+  <div id="photosEmpty" class="photos-empty"><div class="photos-empty-icon">🌊</div><p>No photos yet!</p><small>Be the first to upload a trip photo.</small></div>
+</section>
+
+<!-- TIPS -->
+<section id="tips">
+  <div class="section-title">Family Travel Tips</div>
+  <p class="section-sub">Make the most of your San Diego adventure 💡</p>
+  <div class="tips-grid">
+    <div class="tip-card"><div class="tip-icon">☀️</div><div><div class="tip-title">Sunscreen is Non-Negotiable</div><div class="tip-text">San Diego sun is strong even on cloudy days. Pack SPF 50+, reapply every 2 hours, and get rash guards for the kids at the beach.</div></div></div>
+    <div class="tip-card"><div class="tip-icon">🎟️</div><div><div class="tip-title">Buy Tickets in Advance</div><div class="tip-text">Pre-purchase Zoo, SeaWorld, and LEGOLAND online to save 20–30%. Consider CityPASS for major savings across multiple attractions!</div></div></div>
+    <div class="tip-card"><div class="tip-icon">🚗</div><div><div class="tip-title">Parking Tips</div><div class="tip-text">Balboa Park and Old Town have free lots. For downtown use ParkWhiz or SpotHero apps to prepay for cheaper spots.</div></div></div>
+    <div class="tip-card"><div class="tip-icon">🌊</div><div><div class="tip-title">Beach Safety</div><div class="tip-text">Always swim at lifeguard beaches. Mission Beach and Pacific Beach have year-round guards. If caught in a rip current, swim parallel to shore.</div></div></div>
+    <div class="tip-card"><div class="tip-icon">🧴</div><div><div class="tip-title">Morning Fog is Normal!</div><div class="tip-text">The marine layer burns off by noon leaving a gorgeous sunny afternoon — don't panic if it's cloudy in the morning!</div></div></div>
+    <div class="tip-card"><div class="tip-icon">📱</div><div><div class="tip-title">Add This App to Home Screen</div><div class="tip-text">iPhone: Safari → Share → Add to Home Screen. Android: Chrome → Menu → Add to Home Screen. Works offline too!</div></div></div>
+    <div class="tip-card"><div class="tip-icon">🌡️</div><div><div class="tip-title">Perfect Weather Window</div><div class="tip-text">July 16–23: highs 74–79°F, lows in the mid-60s, zero rain. You picked the ideal week — essentially perfect weather!</div></div></div>
+    <div class="tip-card"><div class="tip-icon">🍜</div><div><div class="tip-title">Taco Tuesday is Real</div><div class="tip-text">San Diego is the taco capital of California. Find a local taqueria for $1–3 tacos. Locals' fave: carne asada or fish tacos.</div></div></div>
+  </div>
+</section>
+
+</main>
+
+<footer>Made with ❤️ for the <strong style="color:var(--sand)">Family San Diego Trip</strong> · July 16–23, 2026</footer>
+
+<!-- MAP MODAL -->
+<div class="map-modal" id="mapModal">
+  <div class="map-sheet">
+    <div class="map-sheet-header">
+      <div><div class="map-sheet-title" id="mapTitle">Location</div><div class="map-sheet-addr" id="mapAddr"></div></div>
+      <button class="map-close" onclick="closeMap()">✕</button>
+    </div>
+    <div class="map-iframe-wrap">
+      <iframe id="mapIframe" src="" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>
+    <div class="map-actions">
+      <a id="mapDirectionsBtn" href="#" target="_blank" class="map-action-btn map-action-directions">🧭 Get Directions</a>
+      <a id="mapWebsiteBtn" href="#" target="_blank" class="map-action-btn map-action-website">🌐 Website</a>
+    </div>
+  </div>
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <button class="lightbox-close">✕</button>
+  <img id="lightboxImg" src="" alt="">
+</div>
+
+<script>
+  function showSection(id, btn) {
+    document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    btn.classList.add('active');
+    window.scrollTo({ top: document.querySelector('nav').offsetTop, behavior: 'smooth' });
+  }
+
+  function toggleDay(id) {
+    document.getElementById(id).classList.toggle('open');
+  }
+
+  // MAP MODAL
+  let currentWebsite = '#';
+  function openMap(name, coords, website) {
+    currentWebsite = website || '#';
+    const [lat, lng] = coords.split(',');
+    document.getElementById('mapTitle').textContent = name;
+    document.getElementById('mapAddr').textContent = 'San Diego, CA';
+    document.getElementById('mapIframe').src =
+      `https://maps.google.com/maps?q=${encodeURIComponent(name)}&ll=${lat},${lng}&z=16&output=embed`;
+    document.getElementById('mapDirectionsBtn').href =
+      `https://maps.google.com/?daddr=${encodeURIComponent(name)}`;
+    document.getElementById('mapWebsiteBtn').href = website || '#';
+    document.getElementById('mapWebsiteBtn').style.display = website ? '' : 'none';
+    document.getElementById('mapModal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeMap() {
+    document.getElementById('mapModal').classList.remove('open');
+    document.getElementById('mapIframe').src = '';
+    document.body.style.overflow = '';
+  }
+
+  document.getElementById('mapModal').addEventListener('click', function(e) {
+    if (e.target === this) closeMap();
+  });
+
+  // PHOTOS
+  let photos = [];
+  try { photos = JSON.parse(localStorage.getItem('sdtripPhotos') || '[]'); } catch(e) {}
+
+  function renderPhotos() {
+    const grid = document.getElementById('photosGrid');
+    const empty = document.getElementById('photosEmpty');
+    document.getElementById('photoCount').textContent = photos.length + ' photo' + (photos.length !== 1 ? 's' : '');
+    if (!photos.length) { grid.style.display = 'none'; empty.style.display = 'block'; return; }
+    grid.style.display = 'grid'; empty.style.display = 'none';
+    grid.innerHTML = photos.map((p, i) => `
+      <div class="photo-item" onclick="openLightbox('${p.src}')">
+        <img src="${p.src}" alt="Photo ${i+1}" loading="lazy">
+        <div class="photo-caption">${p.name || 'San Diego 2026'}</div>
+        <button class="photo-delete" onclick="deletePhoto(event,${i})">✕</button>
+      </div>`).join('');
+  }
+
+  function handlePhotos(e) {
+    Array.from(e.target.files).forEach(file => {
+      const r = new FileReader();
+      r.onload = ev => { photos.push({ src: ev.target.result, name: file.name.replace(/\.[^.]+$/, '') }); savePhotos(); renderPhotos(); };
+      r.readAsDataURL(file);
+    });
+    e.target.value = '';
+  }
+
+  function deletePhoto(e, i) {
+    e.stopPropagation();
+    if (confirm('Remove this photo?')) { photos.splice(i, 1); savePhotos(); renderPhotos(); }
+  }
+
+  function savePhotos() { try { localStorage.setItem('sdtripPhotos', JSON.stringify(photos)); } catch(e) {} }
+
+  function openLightbox(src) {
+    document.getElementById('lightboxImg').src = src;
+    document.getElementById('lightbox').classList.add('open');
+  }
+  function closeLightbox() { document.getElementById('lightbox').classList.remove('open'); }
+
+  function shareApp() {
+    if (navigator.share) {
+      navigator.share({ title: '🌊 San Diego Family Trip – July 16-23, 2026', text: 'Our family trip planner for San Diego! Itinerary, maps, restaurants & shared photo album.', url: window.location.href });
+    } else {
+      navigator.clipboard.writeText(window.location.href).then(() => alert('📋 Link copied! Paste it in your family group chat.'));
+    }
+  }
+
+  renderPhotos();
+</script>
+</body>
+</html>
